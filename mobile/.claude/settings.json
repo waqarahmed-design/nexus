@@ -1,0 +1,25 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 1 > /tmp/nexus-docs-update-needed 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f /tmp/nexus-docs-update-needed ]; then rm /tmp/nexus-docs-update-needed; cd \"/Users/waqar.ahmed/Documents/Claude Projects/Crypto Dashboard/mobile\" && claude -p \"$(cat .claude/commands/document-product.md)\" --dangerously-skip-permissions 2>/dev/null || true; fi"
+          }
+        ]
+      }
+    ]
+  }
+}

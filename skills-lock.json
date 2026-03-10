@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "skill-creator": {
+      "source": "aiskillstore/marketplace",
+      "sourceType": "github",
+      "computedHash": "b734045cd8410b3043bee679f9ba89bbbfdbcd2f3f1ad308fd9b28b7700e69d2"
+    }
+  }
+}
