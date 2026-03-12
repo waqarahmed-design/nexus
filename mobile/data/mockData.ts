@@ -20,6 +20,13 @@ export interface Asset {
   priceWeekly:  { label: string; value: number }[];  // 12-week price history
   priceMonthly: { label: string; value: number }[];  // 12-month price history
   holdings: Holding[];
+  fundamentals: {
+    ath:                number;   // All-time high price in USD
+    athDate:            string;   // ISO date: "2024-12-17"
+    marketCapBn:        number;   // Market cap in billions
+    rank:               number;   // CoinGecko rank
+    circulatingSupplyM: number;   // Circulating supply in millions
+  };
 }
 
 export interface Exchange {
@@ -34,6 +41,36 @@ export interface Exchange {
   valueDaily:   { label: string; value: number }[];
   valueWeekly:  { label: string; value: number }[];
   valueMonthly: { label: string; value: number }[];
+}
+
+export interface Benchmark {
+  id:              string;
+  label:           string;
+  returns7d:       number[];        // 7 normalized values, base 100
+  change7dPercent: number;
+  color:           string;          // line/dot color (benchmark brand colors — data layer only)
+}
+
+export interface RiskMetrics {
+  volatilityScore:   number;       // 0–100
+  volatilityLabel:   string;       // 'Low' | 'Moderate' | 'High'
+  sharpeRatio:       number;
+  concentrationRisk: string;
+  topHoldingName:    string;
+  topHoldingPercent: number;
+  exchangeCount:     number;
+  exchangeRiskLabel: string;       // 'Diversified' | 'Concentrated'
+}
+
+export type InsightType = 'warning' | 'info' | 'tip';
+
+export interface Insight {
+  id:              string;
+  type:            InsightType;
+  title:           string;
+  body:            string;
+  iconKey:         string;   // must match a key in Icons
+  recommendations: string[]; // 2–3 actionable steps
 }
 
 // ─── Portfolio ────────────────────────────────────────────────────────────────
@@ -156,6 +193,9 @@ export const ASSETS: Asset[] = [
       { exchangeId: 'binance',  amount: 0.42, valueUSD: 28_285.19 },
       { exchangeId: 'coinbase', amount: 0.30, valueUSD: 20_203.70 },
     ],
+    fundamentals: {
+      ath: 108364, athDate: '2024-12-17', marketCapBn: 1320.4, rank: 1, circulatingSupplyM: 19.7,
+    },
   },
   {
     id: 'ethereum',
@@ -189,6 +229,9 @@ export const ASSETS: Asset[] = [
       { exchangeId: 'coinbase', amount: 2.8, valueUSD: 9_823.66 },
       { exchangeId: 'kraken',   amount: 1.4, valueUSD: 4_911.83 },
     ],
+    fundamentals: {
+      ath: 4878, athDate: '2021-11-10', marketCapBn: 420.8, rank: 2, circulatingSupplyM: 120.2,
+    },
   },
   {
     id: 'solana',
@@ -221,6 +264,9 @@ export const ASSETS: Asset[] = [
     holdings: [
       { exchangeId: 'coinbase', amount: 45.5, valueUSD: 6_469.19 },
     ],
+    fundamentals: {
+      ath: 259.96, athDate: '2021-11-06', marketCapBn: 62.1, rank: 5, circulatingSupplyM: 436.8,
+    },
   },
   {
     id: 'binancecoin',
@@ -253,6 +299,9 @@ export const ASSETS: Asset[] = [
     holdings: [
       { exchangeId: 'binance', amount: 8.3, valueUSD: 4_833.09 },
     ],
+    fundamentals: {
+      ath: 686.31, athDate: '2021-05-10', marketCapBn: 84.3, rank: 4, circulatingSupplyM: 144.9,
+    },
   },
   {
     id: 'tether',
@@ -271,6 +320,9 @@ export const ASSETS: Asset[] = [
       { exchangeId: 'binance', amount: 3_246.18, valueUSD: 3_246.18 },
       { exchangeId: 'kraken',  amount: 2_000.00, valueUSD: 2_000.00 },
     ],
+    fundamentals: {
+      ath: 1.22, athDate: '2018-07-24', marketCapBn: 108.6, rank: 3, circulatingSupplyM: 108540,
+    },
   },
   {
     id: 'ripple',
@@ -304,6 +356,9 @@ export const ASSETS: Asset[] = [
       { exchangeId: 'binance', amount: 2_000, valueUSD: 1_106.00 },
       { exchangeId: 'kraken',  amount: 6_500, valueUSD: 3_594.50 },
     ],
+    fundamentals: {
+      ath: 3.40, athDate: '2018-01-07', marketCapBn: 30.2, rank: 6, circulatingSupplyM: 54600,
+    },
   },
 ];
 
@@ -426,3 +481,97 @@ export function formatPrice(price: number): string {
   if (price >= 1) return `$${price.toFixed(3)}`;
   return `$${price.toFixed(4)}`;
 }
+
+// ─── Analytics ────────────────────────────────────────────────────────────────
+
+export const BENCHMARKS: Benchmark[] = [
+  {
+    id: 'portfolio', label: 'Your Portfolio',
+    returns7d: [100, 102.9, 100.9, 105.7, 105.0, 106.9, 108.5],
+    change7dPercent: 8.52, color: '#C8E847',
+  },
+  {
+    id: 'btc', label: 'Bitcoin',
+    returns7d: [100, 102.2, 99.2, 103.4, 104.3, 106.1, 107.9],
+    change7dPercent: 7.86, color: '#F7931A',
+  },
+  {
+    id: 'eth', label: 'Ethereum',
+    returns7d: [100, 98.6, 97.6, 96.6, 95.8, 96.4, 96.4],
+    change7dPercent: -3.62, color: '#627EEA',
+  },
+  {
+    id: 'sp500', label: 'S&P 500',
+    returns7d: [100, 100.4, 99.8, 101.1, 101.3, 101.8, 102.2],
+    change7dPercent: 2.18, color: '#4ADE80',
+  },
+];
+
+export const RISK_METRICS: RiskMetrics = {
+  volatilityScore: 72,
+  volatilityLabel: 'High',
+  sharpeRatio: 1.84,
+  concentrationRisk: 'BTC dominates 57% of your portfolio',
+  topHoldingName: 'Bitcoin',
+  topHoldingPercent: 57.4,
+  exchangeCount: 3,
+  exchangeRiskLabel: 'Diversified',
+};
+
+export const INSIGHTS: Insight[] = [
+  {
+    id: 'btc-concentration', type: 'warning',
+    title: 'High concentration in Bitcoin',
+    body: 'BTC represents 57% of your total portfolio. Consider diversifying to reduce single-asset risk.',
+    iconKey: 'alertCircle',
+    recommendations: [
+      'Consider allocating 5–10% of BTC gains into ETH or SOL to reduce single-asset exposure.',
+      'Set a rebalancing alert when BTC exceeds 60% of your portfolio.',
+      'Review your exchange allocation — Binance holds the majority of your BTC.',
+    ],
+  },
+  {
+    id: 'outperforming', type: 'tip',
+    title: 'Outperforming Bitcoin this week',
+    body: "Your portfolio gained 8.5% in 7 days vs. BTC's 7.9%. SOL's rally is the main driver.",
+    iconKey: 'flash',
+    recommendations: [
+      "SOL's 30-day rally is the primary driver of your edge over BTC.",
+      'Lock in gains gradually — consider moving 10–15% of SOL profits to stablecoins.',
+      'Watch for SOL retracement signals if the rally extends beyond historical patterns.',
+    ],
+  },
+  {
+    id: 'exchange-split', type: 'info',
+    title: 'Assets spread across 3 exchanges',
+    body: 'Binance holds 44%, Coinbase 43%, Kraken 12%. Multi-exchange exposure reduces single point of failure.',
+    iconKey: 'layers',
+    recommendations: [
+      'Your 3-exchange spread reduces single-point-of-failure risk effectively.',
+      'Ensure API keys on all exchanges are read-only and rotated every 90 days.',
+      'Consider moving more of your XRP from Kraken to Coinbase for added redundancy.',
+    ],
+  },
+  {
+    id: 'usdt-drag', type: 'info',
+    title: 'USDT earning no yield',
+    body: '$5,246 in Tether is sitting idle. Stablecoin yield products could put it to work.',
+    iconKey: 'info',
+    recommendations: [
+      'Explore on-chain stablecoin yield products (AAVE, Compound) for your idle USDT.',
+      'Even a 4–5% APY on $5,246 adds ~$210–$262 annually with minimal risk.',
+      'Keep at least $1,000 liquid for rapid rebalancing opportunities.',
+    ],
+  },
+  {
+    id: 'high-volatility', type: 'warning',
+    title: 'Portfolio volatility is elevated',
+    body: 'Your 30-day volatility score of 72/100 is above average. SOL drives much of this.',
+    iconKey: 'alertCircle',
+    recommendations: [
+      'SOL drives ~40% of your portfolio volatility — watch its position size carefully.',
+      'A volatility score above 70 suggests reducing leverage or adding stablecoin buffer.',
+      'Review your portfolio weekly during high-volatility market conditions.',
+    ],
+  },
+];

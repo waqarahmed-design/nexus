@@ -75,11 +75,22 @@ Users spread across exchanges for several rational reasons:
 - Primary need: "what is my total worth right now?"
 - Less likely to need granular analytics
 
+### Tertiary: The Diversified Retail Investor (Phase 8 Target)
+
+- Holds crypto + stocks + mutual funds simultaneously
+- Crypto is one slice of a broader portfolio (20–40% of total wealth)
+- Frustrated that no single app shows the full picture
+- Primary need: "what is my total net worth across everything?"
+- Likely already uses Empower, Kubera, or a spreadsheet for the non-crypto portion
+- **Net worth:** $100K–$500K (larger wealth base than pure crypto users)
+- **Why they matter for Nexus:** Lower churn risk (less sensitive to crypto market cycles), larger addressable market, higher willingness to pay for a comprehensive solution
+
 ### Not the Target (v1)
 
 - DeFi-native users (wallets, DEX positions) — different technical stack required
 - Institutional traders — needs compliance, audit trails, multi-sig
 - Complete beginners — API key setup is a significant barrier
+- Pure traditional investors (no crypto) — v1 has nothing for them; target from Phase 8 onwards
 
 ---
 
@@ -105,6 +116,25 @@ Users spread across exchanges for several rational reasons:
 | **Trust transparency** | Competitors underexplain what data they access | Read-only API keys + explicit disclosure at every sensitive touchpoint |
 | **Editorial design** | Entire category uses generic fintech UI | Strong visual identity (dark, editorial, precise) is a real differentiator |
 | **Post-FTX positioning** | "Your keys, your crypto" sentiment is high | Explicit "never moves funds" messaging has a narrative advantage right now |
+
+---
+
+### Broader Wealth Aggregators (Phase 8 Competitive Landscape)
+
+As Nexus expands beyond crypto, it enters a second competitive category: total wealth / net worth tracking. Key players:
+
+| Product | Model | Key Strength | Key Weakness |
+|---------|-------|-------------|--------------|
+| **Kubera** | $150/yr | Best-in-class multi-asset (crypto + stocks + real estate + custom assets) | Web-only; no mobile app; expensive; no live crypto exchange sync |
+| **Empower (Personal Capital)** | Free + wealth management upsell | Best investment analytics (401k, stocks, net worth) | Almost no crypto support; aggressively pushes financial advisors |
+| **Sharesight** | Freemium ($20/mo) | Best for stocks + ETFs, excellent dividend tracking, performance vs. benchmark | No crypto support; complex UI; primarily ANZ/UK market |
+| **Monarch Money** | $14.99/mo | Modern Mint replacement; budgeting + net worth in one | Budgeting-first (spending focus), not investment-first; weak crypto |
+| **Mint (RIP)** | Shut down 2024 | Was the dominant personal finance app | Gone — left 22M users looking for alternatives |
+| **Wealthica** | Freemium | Canadian-focused; good multi-asset aggregation | Limited global exchange support |
+
+**Key insight:** No product does both crypto (with live exchange sync) and traditional investments (stocks, funds, real estate) well. Kubera is the closest — it supports custom assets and some crypto — but lacks live exchange connections and has no mobile app. **This is Nexus's long-term whitespace.**
+
+**The opportunity:** A mobile-first, live-syncing total wealth dashboard that starts from crypto (where the product-market fit is clearest) and expands outward. The design quality and data freshness Nexus is built on are absent from every player in the broader category.
 
 ---
 
@@ -796,6 +826,10 @@ These questions need answers before or during development:
 - [ ] Should Nexus support DeFi wallets (MetaMask, Phantom) in v2?
 - [ ] Is tax reporting a target feature? (Would significantly change data model)
 - [ ] Should Nexus support price alerts / notifications?
+- [ ] Which non-crypto asset class should Nexus expand to first after crypto — stocks, mutual funds, or commodities? (User research needed)
+- [ ] Is Plaid the right aggregation layer for brokerages, or are direct OAuth integrations (Alpaca, Schwab) preferred? Plaid is faster to market; direct integrations are more reliable and provide richer data.
+- [ ] Should the app rebrand or update its positioning when Phase 8 ships, or position the expansion as a natural evolution of Nexus?
+- [ ] What data provider for mutual fund NAV? Morningstar API is most comprehensive but expensive; Open FIGI is free but requires more assembly work.
 
 ### Technical Questions
 - [ ] What cloud provider? (Railway is simplest; AWS/GCP if scaling matters)
@@ -803,6 +837,9 @@ These questions need answers before or during development:
 - [ ] Should portfolio sync be real-time (WebSockets) or polling?
 - [ ] What is the acceptable staleness for portfolio data? (30s? 60s? 5min?)
 - [ ] Do we need exchange-specific price (from that exchange) or global market price?
+- [ ] For stock prices, which provider? Polygon.io (real-time, generous free tier), Alpha Vantage (widely used, limited free tier), or Yahoo Finance (unofficial, no API key required but unstable)?
+- [ ] For real estate valuation, Zillow Zestimate API is US-only. What's the equivalent for UK/EU/AU? (Rightmove, Domain.com.au, Immobiliare.it — none have public APIs)
+- [ ] Should mutual fund NAV sync daily (acceptable for funds) or attempt intraday for ETFs? ETFs trade like stocks and need live prices; NAV funds update once per day.
 
 ### Compliance Questions
 - [ ] Will the app target EU users? (GDPR obligations)
@@ -811,4 +848,4 @@ These questions need answers before or during development:
 
 ---
 
-*Document version: 1.0 | Created: March 2026 | Status: Living document — update as decisions are made*
+*Document version: 1.1 | Created: March 2026 | Updated: March 2026 (added broader wealth aggregator competitive landscape, diversified investor persona, multi-asset open questions) | Status: Living document — update as decisions are made*

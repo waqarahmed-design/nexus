@@ -1,8 +1,8 @@
 # Nexus — Product Roadmap
 
-> Every feature on this roadmap serves one goal: give investors a complete, accurate, and effortless view of their total crypto holdings. Nothing here turns Nexus into a trading platform or moves it off that path.
+> Every feature on this roadmap serves one goal: give investors a complete, accurate, and effortless view of their total wealth — across every asset class, exchange, brokerage, and account — in one place. Nothing here turns Nexus into a trading platform or moves it off that path.
 
-**North Star:** *The most trusted, complete picture of a crypto investor's wealth — across every exchange, wallet, and chain — in one place.*
+**North Star:** *The most trusted, complete picture of an investor's total wealth — crypto, stocks, funds, commodities, and real assets — unified in one place.*
 
 **Last updated:** March 2026
 **Status key:** 🟢 Done · 🔵 In Progress · ⚪ Planned · 🔭 Future Consideration
@@ -12,10 +12,10 @@
 ## Roadmap Overview
 
 ```
-Phase 1 ──── Phase 2 ──── Phase 3 ──── Phase 4 ──── Phase 5 ──── Phase 6
-Foundation   Portfolio    Expanded     Alerts &     Analytics    Platform
-  (MVP)      Intelligence  Coverage   Monitoring    & Insights   Expansion
-  Q1 2026     Q2 2026      Q3 2026     Q3 2026       Q4 2026      2027
+Phase 1 ──── Phase 2 ──── Phase 3 ──── Phase 4 ──── Phase 5 ──── Phase 6 ──── Phase 7 ──── Phase 8
+Foundation   Portfolio    Expanded     Alerts &     Analytics    Platform    Collab &    Universal
+  (MVP)      Intelligence  Coverage   Monitoring    & Insights   Expansion    Export     Investment
+  Q1 2026     Q2 2026      Q3 2026     Q3 2026       Q4 2026      2027         2027        2028
 ```
 
 ---
@@ -246,7 +246,81 @@ Priority order based on user base size:
 - ⚪ **Portfolio isolation** — Each portfolio has its own exchanges and wallets
 - ⚪ **Combined view** — Toggle between individual portfolios or "All Combined"
 
-> **Use case:** User has personal crypto + a business entity holding crypto. Currently impossible to track separately.
+> **Use case:** User has personal investments + a business entity holding assets. Currently impossible to track separately in one app.
+
+---
+
+## Phase 8 — Universal Investment Coverage
+*Expand Nexus from crypto aggregator to total wealth dashboard.*
+
+> This phase extends Nexus beyond crypto to cover every major investable asset class. The core product promise — read-only, aggregated, unified — stays the same. Only the data sources change.
+
+### 8.1 Stock & Brokerage Integration
+
+| Brokerage | Integration Method | Priority | Region |
+|-----------|-------------------|----------|--------|
+| **Alpaca** | REST API (OAuth) | High | US |
+| **Interactive Brokers** | IBKR Client Portal API | High | Global |
+| **Charles Schwab** | Schwab Developer API (OAuth) | High | US |
+| **Robinhood** | Plaid integration | Medium | US |
+| **eToro** | eToro Open API | Medium | Global |
+| **Fidelity** | Plaid integration | Medium | US |
+| **Trading 212** | Official API (OAuth) | Medium | EU/UK |
+| **Freetrade** | Plaid / Open Banking | Low | UK |
+
+- ⚪ **Real-time stock prices** — Polygon.io or Alpha Vantage for live quotes
+- ⚪ **Holdings sync** — Number of shares, average cost basis (from brokerage), current value
+- ⚪ **24h change** — Price movement per stock, total portfolio impact
+- ⚪ **Dividend tracking** — Show upcoming and received dividends (read from brokerage data)
+- ⚪ **Unified view** — Stocks and crypto in the same portfolio total, with clear category labels
+- ⚪ **Per-brokerage breakdown** — Same exchange-breakdown pattern applied to brokerages
+
+> **Technical approach:** Plaid supports 12,000+ financial institutions including brokerages. For brokerages with direct APIs (Alpaca, IBKR, Schwab), use their native OAuth flows — same pattern as crypto exchange API keys.
+
+### 8.2 Mutual Fund & ETF Tracking
+
+- ⚪ **Manual fund input** — User enters fund name or ISIN; Nexus looks up current NAV
+- ⚪ **NAV tracking** — Daily NAV updates via Morningstar API or Open FIGI / OPENFUNDS
+- ⚪ **Units + value** — User inputs number of units held; app computes current value
+- ⚪ **Fund categories** — Equity, bond, balanced, index, sector — shown as allocation tags
+- ⚪ **Performance vs. benchmark** — Fund return vs. its stated benchmark index
+- ⚪ **ETF support** — ETFs treated as stocks (live price) rather than funds (daily NAV)
+- ⚪ **Expense ratio display** — Show TER/MER as an informational data point
+- ⚪ **Fund detail screen** — Extends the Asset Detail pattern: fund name, category, NAV history, your position
+
+> **Why manual input first:** Most mutual fund platforms do not offer API access for retail investors. Manual ISIN entry + NAV lookup gives coverage without needing brokerage integration for every fund platform globally.
+
+### 8.3 Commodities & Precious Metals
+
+- ⚪ **Gold & silver tracking** — Live spot prices via Metals-API or Gold-API; user inputs weight/oz held
+- ⚪ **Platinum & palladium** — Same pattern as gold/silver
+- ⚪ **Oil & energy commodities** — WTI crude, Brent crude, natural gas (Commodities API or Alpha Vantage)
+- ⚪ **Agricultural commodities** — Wheat, corn, coffee — for users with commodity exposure via ETFs or CFDs
+- ⚪ **Physical vs. paper** — User marks whether holding is physical (vault, home) or paper (ETC, ETF)
+- ⚪ **Commodity portfolio section** — Separate section on dashboard with total commodity value
+- ⚪ **Historical commodity charts** — Same 7D / 30D / 90D / 1Y chart pattern applied to commodities
+
+> **Technical approach:** Metals-API provides real-time and historical gold/silver/platinum prices. Commodities (oil, agri) available via Alpha Vantage commodities endpoint or Commodity Price API. All read-only — user inputs quantity, app computes value.
+
+### 8.4 Real Assets
+
+**Real Estate**
+- ⚪ **Property entry** — User adds property address and purchase price
+- ⚪ **Estimated value** — Zillow Zestimate API or Rentcast API for current estimated market value
+- ⚪ **Appreciation tracking** — Change in estimated value since purchase (unrealized gain)
+- ⚪ **Equity calculation** — If user inputs outstanding mortgage balance, show equity (value minus debt)
+- ⚪ **Multi-property support** — Add multiple properties (primary home, rental, commercial)
+- ⚪ **Rental income** — Optional: user logs monthly rental income; shown as yield on investment
+
+**Cash & Bank Accounts**
+- ⚪ **Bank account balances** — Connect checking and savings accounts via Plaid (read-only balance only)
+- ⚪ **Cash as an asset class** — Cash shown as a category in allocation view ("18% cash")
+- ⚪ **Multi-currency cash** — Show balances in native currency + converted to user's base currency
+- ⚪ **Savings rate** — Optional: show interest earned on high-yield savings accounts
+
+> **Why this matters:** Real estate is often an investor's single largest asset. Without it, the "total wealth" view is fundamentally incomplete. We use public valuation APIs — no mortgage platform integration required.
+
+> **Privacy note:** Property address data is sensitive. All real estate data stored encrypted. Users can label properties ("Home", "Rental 1") without the address being visible in sharing or export features.
 
 ---
 
@@ -272,6 +346,13 @@ Phase 5 (Analytics) → requires Phase 2 (needs history data)
 Phase 6 (Platform) → requires Phase 1 (needs real data)
 
 Phase 7 (Export) → requires Phase 2 + 3 (richer data = better exports)
+
+Phase 8 (Universal Investment)
+  ├── 8.1 Stocks → requires Phase 1 (same auth + sync pattern as crypto)
+  ├── 8.2 Mutual Funds → independent (manual entry + NAV lookup, no backend dependency)
+  ├── 8.3 Commodities → independent (user inputs quantity, API provides price)
+  └── 8.4 Real Assets → independent (user inputs property, API provides estimate)
+  └── All of Phase 8 → feeds Phase 5 Analytics and Phase 7 Export with richer data
 ```
 
 ---
@@ -287,7 +368,7 @@ These features were considered and rejected because they change the product's fu
 | **Price prediction / signals** | Speculative. Damages trust if wrong. Not our expertise. |
 | **Social trading / copy trading** | Requires user identity, social graph, trust network. Completely different product. |
 | **Crypto earning / yield products** | Requires money transmission license. Out of scope permanently. |
-| **Fiat accounts (bank integration)** | Different data sources (Plaid/Open Banking), different regulations. Would dilute the crypto focus. |
+| **Fiat accounts (bank integration)** | Partially in scope — cash balances via Plaid are included in Phase 8.4 as part of total wealth view. Full current account transaction history and payment initiation remain out of scope. |
 | **NFT portfolio valuation** | Illiquid assets with unreliable floor prices. Misleading more than helpful. Reconsider if NFT market matures. |
 
 ---
@@ -301,7 +382,7 @@ When deciding what to build next, score each feature on:
 | **User value** | 40% | Does this give the user meaningfully better investment visibility? |
 | **Technical complexity** | 25% | How long to build and how much maintenance? |
 | **User demand** | 20% | Have multiple users asked for this? |
-| **Strategic fit** | 15% | Does this reinforce "complete picture of your investments"? |
+| **Strategic fit** | 15% | Does this reinforce "complete picture of total wealth, across every asset class"? |
 
 **Score 1–5 on each. Weighted total → build order.**
 
@@ -317,7 +398,9 @@ When deciding what to build next, score each feature on:
 | Phase 4 (Alerts) | 30-day retention | > 55% (alerts bring users back) |
 | Phase 5 (Analytics) | Weekly active users | +25% (insights create habit) |
 | Phase 6 (Platform) | Widget installs | > 30% of active users install widget |
+| Phase 7 (Export) | Export usage | > 20% of users export at least once per month |
+| Phase 8 (Universal) | Non-crypto asset connections | > 40% of users track at least one non-crypto asset class |
 
 ---
 
-*Document version: 1.0 | Created: March 2026 | Review: Quarterly or after each phase ships*
+*Document version: 2.0 | Created: March 2026 | Updated: March 2026 (expanded scope to universal investment coverage) | Review: Quarterly or after each phase ships*

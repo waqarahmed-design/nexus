@@ -115,6 +115,7 @@ export const Icons = {
   trendUp:       ChartIncreaseIcon,
   trendDown:     ChartDecreaseIcon,
   barChart:      BarChartIcon,
+  analytics:     BarChartIcon,
 
   // Security / trust
   shieldCheck:   ShieldKeyIcon,

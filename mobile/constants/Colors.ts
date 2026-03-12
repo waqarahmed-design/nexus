@@ -31,6 +31,28 @@ export const Colors = {
   tooltipBorder:'rgba(255,255,255,0.10)', // SparklineChart tooltip border
   surfaceGlow:  'rgba(255,255,255,0.025)',// Decorative orb / radial glow surface
 
+  // ── 3D bevel effect tokens (raised cards and inset troughs) ──────────────
+  // Asymmetric border pairs: top/left catches light, bottom/right recedes.
+  bevelHighlight:   'rgba(255,255,255,0.12)', // top/left edge highlight
+  bevelHighlightLg: 'rgba(255,255,255,0.18)', // stronger highlight (accent-tinted surfaces)
+  bevelShadow:      'rgba(0,0,0,0.50)',        // bottom/right edge shadow
+  bevelShadowSm:    'rgba(0,0,0,0.30)',        // lighter shadow variant
+
+  // ── Advanced effect fills (SVG layers, bar tracks, dividers) ─────────────
+  surfaceSubtle:  'rgba(255,255,255,0.06)',  // near-invisible white fill
+  surfaceDivider: 'rgba(255,255,255,0.04)',  // ultra-subtle rule line
+
+  // ── Mesh gradient palette (Analytics hero card SVG blob colors) ───────────
+  meshBase:  '#0A0F08',  // near-black with green tint, SVG rect base fill
+  meshOlive: '#1A3300',  // deep forest olive, large ambient blob
+  meshTeal:  '#006655',  // dark teal, atmosphere blob center-right
+  meshFern:  '#4A6B00',  // mid olive, smaller accent blob
+
+  // ── Accent border/fill variants for effect overlays ───────────────────────
+  accentBorderLg:   'rgba(200,232,71,0.18)', // stronger lime border (mesh card top)
+  accentBorderMd:   'rgba(200,232,71,0.10)', // medium lime border (mesh card left)
+  accentFillSubtle: 'rgba(200,232,71,0.08)', // lime fill on portfolio bar track
+
   // ── Coin brand colors ─────────────────────────────────────────────────────
   coinBTC:  '#F7931A',
   coinETH:  '#627EEA',

@@ -15,6 +15,7 @@ import { Icon } from '@/components/ui/Icon';
 const TABS = [
   { name: 'index',     label: 'Portfolio', icon: Icons.portfolio },
   { name: 'exchanges', label: 'Exchanges', icon: Icons.exchanges  },
+  { name: 'analytics', label: 'Analytics', icon: Icons.analytics  },
   { name: 'settings',  label: 'Settings',  icon: Icons.settings   },
 ];
 
@@ -100,6 +101,7 @@ export default function TabsLayout() {
     >
       <Tabs.Screen name="index" />
       <Tabs.Screen name="exchanges" />
+      <Tabs.Screen name="analytics" />
       <Tabs.Screen name="settings" />
     </Tabs>
   );

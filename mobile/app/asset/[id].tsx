@@ -286,6 +286,45 @@ export default function AssetDetailScreen() {
             );
           })}
         </View>
+
+        {/* ── Research section ── */}
+        <View style={s.researchSection}>
+          <Text style={s.researchLabel}>RESEARCH</Text>
+          <View style={s.researchCard}>
+            {/* ATH */}
+            <View style={s.researchRow}>
+              <Text style={s.researchKey}>All-Time High</Text>
+              <View style={s.researchValueGroup}>
+                <Text style={s.researchValue}>{formatPrice(asset.fundamentals.ath)}</Text>
+                <Text style={s.researchMeta}>{asset.fundamentals.athDate}</Text>
+              </View>
+            </View>
+            <View style={s.researchDivider} />
+            {/* Market Cap */}
+            <View style={s.researchRow}>
+              <Text style={s.researchKey}>Market Cap</Text>
+              <Text style={s.researchValue}>${asset.fundamentals.marketCapBn.toFixed(1)}B</Text>
+            </View>
+            <View style={s.researchDivider} />
+            {/* Rank */}
+            <View style={s.researchRow}>
+              <Text style={s.researchKey}>Rank</Text>
+              <Text style={s.researchValue}>#{asset.fundamentals.rank}</Text>
+            </View>
+            <View style={s.researchDivider} />
+            {/* Circulating Supply */}
+            <View style={s.researchRow}>
+              <Text style={s.researchKey}>Circulating Supply</Text>
+              <Text style={s.researchValue}>
+                {asset.fundamentals.circulatingSupplyM >= 1000
+                  ? `${(asset.fundamentals.circulatingSupplyM / 1000).toFixed(1)}B`
+                  : `${asset.fundamentals.circulatingSupplyM.toFixed(1)}M`}
+                {' '}{asset.symbol}
+              </Text>
+            </View>
+          </View>
+        </View>
+
       </ScrollView>
     </Animated.View>
   );
@@ -427,7 +466,7 @@ const s = StyleSheet.create({
     backgroundColor: Colors.card,
     borderRadius:    Radii.card,
     overflow:        'hidden',
-    marginBottom:    Spacing[5],
+    marginBottom:    Spacing[1],
   },
   holdingBorderWrap: {},
   holdingBorder: { borderBottomWidth: 1, borderBottomColor: Colors.cardBorder },
@@ -459,15 +498,33 @@ const s = StyleSheet.create({
     ...TypeScale.body.md,
   },
   holdingBar: {
-    height:          3,
+    height:          4,
     backgroundColor: Colors.cardBorder,
-    borderRadius:    2,
+    borderRadius:    Radii.micro,
     marginTop:       Spacing[1],
     overflow:        'hidden',
   },
-  holdingBarFill: { height: 3, borderRadius: 2, backgroundColor: Colors.gray },
+  holdingBarFill: { height: 4, borderRadius: Radii.micro, backgroundColor: Colors.gray },
   holdingValue: {
     color: Colors.white,
     ...TypeScale.numeric.sm,
   },
+
+  // ── Research section ───────────────────────────────────────────────────────
+  researchSection:    { marginTop: Spacing[2] },
+  researchLabel:      { color: Colors.gray, ...TypeScale.label.md, marginBottom: Spacing[2] },
+  researchCard:       { backgroundColor: Colors.card, borderRadius: Radii.card, overflow: 'hidden' },
+  researchRow: {
+    flexDirection:     'row',
+    alignItems:        'center',
+    justifyContent:    'space-between',
+    paddingHorizontal: Spacing.cardPad,
+    paddingVertical:   Spacing[3],
+    minHeight:         Spacing.touchTarget,
+  },
+  researchDivider:    { height: 1, backgroundColor: Colors.cardBorder, marginHorizontal: Spacing.cardPad },
+  researchKey:        { color: Colors.gray, ...TypeScale.body.lg },
+  researchValue:      { color: Colors.white, ...TypeScale.numeric.xs, fontFamily: FontFamily.mono },
+  researchValueGroup: { alignItems: 'flex-end', gap: Spacing[1] },
+  researchMeta:       { color: Colors.gray, ...TypeScale.body.md },
 });

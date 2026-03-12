@@ -38,12 +38,21 @@ Nexus API (Fastify / Node.js)
     │
     ├── PostgreSQL (persistent data)
     ├── Redis (price cache, session cache)
-    └── CCXT (exchange API abstraction)
+    └── CCXT (exchange API abstraction)         ← Phase 1 data sources
             │
             ├── Binance REST API
             ├── Coinbase Advanced Trade API
             └── Kraken REST API
+
+── Phase 8 additions (not in this spec) ──────────────────────────────
+    ├── Plaid API (brokerage + bank balances)
+    ├── Brokerage OAuth APIs (Alpaca, IBKR, Schwab)
+    ├── Polygon.io / Alpha Vantage (stock prices)
+    ├── Metals-API (gold, silver, commodity prices)
+    └── Zillow / Rentcast API (real estate estimates)
 ```
+
+> **Extensibility note:** This spec covers Phase 1 (crypto exchanges only). The backend architecture — connection table, holdings table, sync job pattern, price cache, portfolio aggregation — is intentionally generic. Phase 8 will introduce new data source adapters (brokerage sync services, fund NAV fetchers, commodity price services) that plug into the same sync job and holdings model. No Phase 1 schema changes will be required for Phase 8; new tables will extend the existing schema additively. When building Phase 1, avoid hardcoding `exchangeId` assumptions — treat it as a generic `sourceId` that can refer to a crypto exchange, brokerage, or fund platform.
 
 ### Request Flows
 
@@ -989,6 +998,14 @@ COINGECKO_API_KEY=<optional: CoinGecko demo key for higher rate limits>
 # App
 SYNC_INTERVAL_SECONDS=60
 MIN_HOLDING_VALUE_USD=1.0
+
+# Phase 8 — Multi-asset (not required for Phase 1)
+# PLAID_CLIENT_ID=<Plaid dashboard>
+# PLAID_SECRET=<Plaid dashboard>
+# PLAID_ENV=sandbox|development|production
+# POLYGON_API_KEY=<polygon.io — stock prices>
+# METALS_API_KEY=<metals-api.com — gold/silver/platinum>
+# MORNINGSTAR_API_KEY=<Morningstar — mutual fund NAV>
 ```
 
 ### Generate Secrets
@@ -1060,4 +1077,4 @@ npm run db:studio    # Open Drizzle Studio (DB GUI)
 
 ---
 
-*Document version: 1.0 | Created: March 2026 | Review: Before backend development begins*
+*Document version: 1.1 | Created: March 2026 | Updated: March 2026 (added Phase 8 extensibility notes and future env vars) | Review: Before backend development begins*

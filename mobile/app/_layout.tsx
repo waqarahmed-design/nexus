@@ -80,15 +80,13 @@ export default function RootLayout() {
         />
 
         {/*
-         * Add exchange — slides up from bottom as a modal.
-         * Natural iOS/Android pattern for a multi-step input form.
-         * Signals "this is a task" rather than a destination screen.
+         * Add exchange — pushed as a standard screen from the tab navigator.
+         * Treated as a destination, not a task overlay.
          */}
         <Stack.Screen
           name="add-exchange"
           options={{
-            presentation: 'modal',
-            animation: 'slide_from_bottom',
+            animation: 'slide_from_right',
           }}
         />
 

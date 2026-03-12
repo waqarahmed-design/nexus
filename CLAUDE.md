@@ -29,7 +29,7 @@ Returning user
 
 - **Exchanges tab** — Overview of all connected exchanges. User connects a new exchange from here.
 
-- **Add Exchange** (`/add-exchange`) — 3-step modal: choose exchange → enter read-only API key → success. The only place in the app where user inputs credentials.
+- **Add Exchange** (`/add-exchange`) — 3-step screen: choose exchange → enter read-only API key → success. The only place in the app where user inputs credentials. Pushed from the Exchanges tab as a standard screen, not a modal.
 
 - **Settings tab** — Manage connected exchanges, security (biometric, 2FA), preferences (currency, alerts), and sign out.
 
@@ -41,29 +41,73 @@ Returning user
 
 | Document | Path | Read when |
 |---|---|---|
+| **Prototype Spec** | `Documentation/Spec.md` | Before building or modifying any screen, component, or interaction. Contains acceptance criteria, build status, and the screen-by-screen spec. Always read this first for any implementation task. |
 | Product Requirements (PRD) | `Documentation/Product Requirements.md` | Adding, removing, or scoping any feature. Governs what belongs in the product. |
 | Product Roadmap | `Documentation/Product Roadmap.md` | Planning work, sequencing features, or evaluating if something is in scope. |
 | Research | `Documentation/Research.md` | Making architectural decisions, understanding user needs, or evaluating market context. |
 | Technical Specification | `Documentation/Technical Specification.md` | Writing any backend code, designing data models, or connecting real exchange APIs. |
 | Product Designer Agent | `Agents/Product Designer.md` | Before invoking the product-designer agent — contains its role, skills, and working method. |
 
-**Rule:** If a task touches product scope → read the PRD first. If it touches architecture → read the Tech Spec first. When in doubt, read both.
+**Rule:** Before writing any code → read `Spec.md` first. If it touches product scope → also read the PRD. If it touches architecture → also read the Tech Spec.
 
 ---
 
 ## Product Designer agent — when to invoke
 
-Trigger the product-designer agent for any of the following:
+**Default rule: if a task touches anything visible, interactive, structural, or strategic in the product, invoke the product-designer agent.** When in doubt, invoke it.
 
-- Designing a new screen or flow from scratch
-- Improving or rethinking an existing UI (layout, hierarchy, spacing, typography)
-- Evaluating UX quality or identifying design problems
-- Adding a new component to the design system
-- Any prompt containing: *design*, *UI*, *UX*, *screen*, *layout*, *flow*, *experience*, *visual*, *look and feel*, *feels off*, *improve*, *rethink*, *redesign*
+**Always invoke for:**
 
-Before invoking, read `Agents/Product Designer.md` to understand the agent's role, skills, and working method.
+**Visual / UI changes (any size)**
+- Any change to a `.tsx` screen or component file that affects layout, style, or interactivity
+- Adding, removing, or changing any UI element (button, icon, card, badge, row, input, chart)
+- Changing any color, font, spacing, padding, margin, border radius, or opacity
+- Adding or modifying any animation, transition, or press feedback
+- Adding or changing a loading state, empty state, or error state
+- Any token compliance fix (replacing a raw value with a design token)
+- Any accessibility improvement (touch target, contrast, focus)
+- Any new icon added to the Icons registry
 
-**Do not** invoke the product-designer agent for pure logic bugs, data wiring, navigation routing, or backend work.
+**UX & interaction design**
+- Any new screen, flow, or navigation change
+- Designing or auditing user flows, task flows, or navigation structure
+- Information architecture decisions (what goes where, how content is organized)
+- Interaction design — how a gesture, swipe, tap, or form behaves
+- Feedback design — what happens after an action (success, error, loading)
+- Empty states, edge cases, error recovery, or zero-data states
+- Accessibility audits (WCAG, touch targets, screen reader, contrast)
+- Any prompt containing: *flow*, *journey*, *experience*, *interaction*, *gesture*, *navigation*, *onboarding*, *affordance*, *discoverability*, *usability*, *friction*, *clarity*, *feedback*
+
+**Design system**
+- Adding or editing a design system component (Button, Card, Input, Badge, Icon)
+- Adding, changing, or auditing any design token (color, spacing, radius, typography)
+- Component library decisions — new variants, new patterns, deprecating old ones
+- Token governance — whether something should be a token vs. hardcoded
+- Any prompt containing: *design system*, *component*, *token*, *variant*, *pattern*, *style guide*, *design language*
+
+**Product strategy & planning**
+- Scoping a new feature — what's in, what's out, what's MVP
+- Prioritising features or deciding what to build next
+- Defining success metrics or KPIs for a feature
+- Information architecture — navigation structure, content hierarchy, mental models
+- Any prompt containing: *roadmap*, *prioritise*, *scope*, *strategy*, *opportunity*, *problem*, *goal*, *metric*, *KPI*, *IA*, *information architecture*, *what should we build*, *what belongs*, *is this in scope*
+
+**Research & discovery**
+- Evaluating UX quality, identifying design problems, or auditing a screen
+- Competitive analysis — how do other apps handle this?
+- User mental models — how do users think about this?
+- Heuristic evaluation of any screen or flow
+- Any prompt containing: *audit*, *review*, *evaluate*, *compare*, *research*, *heuristic*, *user need*, *mental model*, *pain point*, *how do other apps*, *best practice*, *benchmark*
+
+**Keyword triggers (any of these words in the prompt)**
+- Actions: *build*, *add*, *create*, *make*, *put*, *show*, *display*, *render*, *update*, *change*, *fix*, *adjust*, *tweak*, *polish*, *improve*, *rethink*, *redesign*, *move*, *align*, *center*, *refine*, *audit*, *review*, *evaluate*, *plan*, *scope*, *prioritise*, *design*, *prototype*, *wireframe*, *sketch*
+- Nouns: *UI*, *UX*, *screen*, *component*, *layout*, *style*, *look*, *feel*, *visual*, *animation*, *transition*, *icon*, *color*, *spacing*, *font*, *button*, *card*, *badge*, *input*, *row*, *tab*, *modal*, *sheet*, *header*, *footer*, *list*, *chart*, *sparkline*, *flow*, *journey*, *experience*, *pattern*, *token*, *design system*, *navigation*, *onboarding*, *feature*, *interaction*, *gesture*, *affordance*, *hierarchy*, *typography*, *palette*
+
+**Do not invoke for:**
+- Pure logic bugs with no visual output (wrong calculation, off-by-one in data)
+- Data wiring with no visual change
+- Backend / API / database / infrastructure work
+- TypeScript type fixes with no visual or UX impact
 
 ---
 

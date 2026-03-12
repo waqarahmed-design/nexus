@@ -27,6 +27,7 @@ import {
   PORTFOLIO_DAILY, PORTFOLIO_WEEKLY, PORTFOLIO_MONTHLY,
   formatUSD, formatAmount,
 } from '@/data/mockData';
+import { InsightsList } from '@/components/InsightsList';
 
 const { width } = Dimensions.get('window');
 const TILE_SIZE = width - 40;
@@ -634,6 +635,12 @@ export default function DashboardScreen() {
           })}
         </View>
 
+        {/* ── Insights section ── */}
+        <View style={s.insightsSection}>
+          <Text style={s.insightsSectionLabel}>INSIGHTS</Text>
+          <InsightsList animated={false} />
+        </View>
+
       </Animated.ScrollView>
 
       {/* ── Bottom fade ── */}
@@ -763,4 +770,14 @@ const s = StyleSheet.create({
   assetRight:    { alignItems: 'flex-end', gap: Spacing[1] },
   assetValue:    { color: Colors.white, ...TypeScale.numeric.sm },
   assetChange:   { ...TypeScale.body.mdMedium },
+
+  // ── Insights section ──────────────────────────────────────────────────────
+  insightsSection: {
+    marginTop: Spacing[1],
+  },
+  insightsSectionLabel: {
+    color:        Colors.gray,
+    ...TypeScale.label.md,
+    marginBottom: Spacing[2],
+  },
 });

@@ -2,9 +2,9 @@
 
 > Defines what Nexus is, who it's for, what it does, and how success is measured. This document governs feature decisions.
 
-**Version:** 1.0
+**Version:** 1.1
 **Status:** Active
-**Scope:** Mobile app MVP + backend infrastructure
+**Scope:** Mobile app MVP + backend infrastructure (Phase 1 crypto); broader vision defined in Product Roadmap
 
 ---
 
@@ -26,13 +26,18 @@
 ## 1. Product Vision
 
 ### One-liner
-**Nexus gives crypto investors a single, real-time view of everything they own across every exchange.**
+**Nexus gives investors a single, real-time view of their total wealth — across every exchange, brokerage, fund, and asset class.**
 
 ### Problem Statement
-Active crypto investors spread assets across multiple exchanges (Binance, Coinbase, Kraken) for safety, access, and fee optimization — but there is no unified view. They open multiple apps, manually add up values, and still lack confidence in their true net worth and allocation.
+Modern investors hold assets across multiple platforms simultaneously: crypto on Binance and Coinbase, stocks on Schwab and Robinhood, mutual funds with a local broker, gold in a vault. No single app reflects the complete picture. They open multiple apps, manually add up values, and still lack confidence in their true net worth and allocation.
+
+The crypto version of this problem is where Nexus begins — it's the most acute pain point (exchanges don't communicate at all) and the most technically accessible starting point. But the long-term vision is total wealth visibility across every asset class.
 
 ### Solution
-A mobile-first portfolio aggregator that connects to exchanges via read-only API keys, pulls real balances automatically, and presents a clean, unified portfolio view with live prices and performance data.
+A mobile-first portfolio aggregator that connects to financial platforms via read-only API keys and credentials, pulls real balances automatically, and presents a clean, unified portfolio view with live prices and performance data — regardless of whether the asset is crypto, stocks, mutual funds, commodities, or real estate.
+
+**MVP scope (Phase 1):** Crypto exchanges — Binance, Coinbase, Kraken.
+**Long-term scope:** All major investable asset classes. See the Product Roadmap for sequencing.
 
 ### What Nexus Is NOT
 - Not a trading platform — cannot buy, sell, or move assets
@@ -101,6 +106,15 @@ A mobile-first portfolio aggregator that connects to exchanges via read-only API
 - **Goal:** Accurate, real-time portfolio data. Not delayed, not approximate.
 - **Pain:** "Other apps round numbers and show stale data. I need precision."
 - **Tech comfort:** Very high — already uses exchange APIs himself
+
+### Persona 4: Riya — The Diversified Accumulator
+- **Age:** 32 | Product manager | $120K salary
+- **Portfolio:** $45K crypto (Coinbase, Kraken), $60K in index funds + ETFs (Schwab), $15K in gold ETF, $8K in company RSUs
+- **Behavior:** Checks portfolio monthly. Long-term growth mindset. Does not trade.
+- **Goal:** One number that represents total net worth — not just the crypto slice
+- **Pain:** "I have four different apps and none of them shows me the full picture. I have no idea what my total wealth actually is."
+- **Tech comfort:** Medium — comfortable with apps but not comfortable generating API keys; needs step-by-step guidance
+- **Why she matters:** Represents the growth vector for Nexus — users who already have crypto but whose larger wealth is elsewhere. Phase 8 is built for Riya.
 
 ---
 
@@ -206,7 +220,7 @@ Dashboard (empty state)
 
 ---
 
-### F-002: Add Exchange (3-Step Modal)
+### F-002: Add Exchange (3-Step Screen)
 
 **Trigger:** "+" button on Exchanges tab or first-time onboarding
 
@@ -364,7 +378,7 @@ These are explicitly excluded and will not be built:
 | NFT portfolio | Different asset class, different data sources |
 | Tax reporting / cost basis | Requires full transaction history, complex accounting logic (FIFO/LIFO/HIFO) |
 | Social features (sharing, leaderboards) | Privacy-sensitive; users don't want portfolio data shared |
-| Fiat account tracking (bank accounts) | Different regulatory category; would require Open Banking/Plaid integration |
+| Fiat account tracking (bank accounts) | Out of scope for v1. Planned in Phase 8.4 (cash balances via Plaid, read-only). Full transaction history and payment initiation remain permanently out of scope. |
 | Copy trading / signals | Out of scope for aggregator positioning |
 | Desktop / web app | Mobile-first strategy; web requires different UX |
 
@@ -448,7 +462,7 @@ These principles govern all UX decisions in Nexus:
 
 | Constraint | Impact |
 |-----------|--------|
-| CCXT library coverage | Can only connect exchanges CCXT supports. Adding an unsupported exchange requires writing a custom connector. |
+| CCXT library coverage | Covers crypto exchanges only. Brokerage and fund integrations (Phase 8) require Plaid, direct OAuth flows, or exchange-specific SDKs — CCXT does not apply. |
 | Exchange rate limits | Cannot sync faster than rate limits allow. At scale, may need to stagger syncs. |
 | CoinGecko free tier | 30 calls/min. At scale, need paid plan or alternative. |
 | Read-only API keys | Cannot verify actual trades or calculate cost basis. Cannot catch exchange-side errors that only show in trading history. |
@@ -467,4 +481,4 @@ These principles govern all UX decisions in Nexus:
 
 ---
 
-*Document version: 1.0 | Created: March 2026 | Owner: Product | Review cycle: Before each major feature*
+*Document version: 1.1 | Created: March 2026 | Updated: March 2026 (expanded vision to universal investment coverage) | Owner: Product | Review cycle: Before each major feature*
