@@ -11,28 +11,32 @@ import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/Colors';
 import { BottomFade, Radii, Spacing } from '@/constants/Spacing';
-import { TypeScale } from '@/constants/Typography';
+import { TypeScale, FontFamily } from '@/constants/Typography';
 import { Icons } from '@/constants/Icons';
 import { Icon } from '@/components/ui/Icon';
-import { SparklineChart } from '@/components/SparklineChart';
 import { DotMatrixChart } from '@/components/DotMatrixChart';
 import { CoinIcon } from '@/components/CoinIcon';
 import { ExchangeLogo } from '@/components/ExchangeLogo';
-import { AllocationBar } from '@/components/AllocationBar';
-import { TopoBackground } from '@/components/TopoBackground';
 import { CoachMark } from '@/components/CoachMark';
 import { useApp } from '@/contexts/AppContext';
 import {
-  ASSETS, EXCHANGES, TOTAL_PORTFOLIO, PORTFOLIO_HISTORY,
+  ASSETS, INSIGHTS, TOTAL_PORTFOLIO,
   PORTFOLIO_DAILY, PORTFOLIO_WEEKLY, PORTFOLIO_MONTHLY,
   formatUSD, formatAmount,
 } from '@/data/mockData';
-import { InsightsList } from '@/components/InsightsList';
 
 const { width } = Dimensions.get('window');
-const TILE_SIZE = width - 40;
+const TILE_SIZE  = width - Spacing.screenH * 2;
 
 type TabType = 'DAILY' | 'WEEKLY' | 'MONTHLY';
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function insightAccentColor(type: string): string {
+  if (type === 'warning') return Colors.red;
+  if (type === 'tip')     return Colors.accent;
+  return Colors.gray;
+}
 
 // ─── Hero Card ────────────────────────────────────────────────────────────────
 
@@ -104,7 +108,7 @@ function HeroCard({ activeTab, onTabChange, displayValue, intFormatted, displayD
         <DotMatrixChart
           key={activeTab}
           data={activeTab === 'DAILY' ? PORTFOLIO_DAILY : activeTab === 'WEEKLY' ? PORTFOLIO_WEEKLY : PORTFOLIO_MONTHLY}
-          width={TILE_SIZE - 36}
+          width={TILE_SIZE - Spacing.cardPad * 2 - 4}
           isGain={isGain}
           formatValue={formatUSD}
         />
@@ -117,14 +121,14 @@ const hero = StyleSheet.create({
   card: {
     width:           TILE_SIZE,
     backgroundColor: Colors.card,
-    borderRadius:    Radii.card,   // 20
+    borderRadius:    Radii.card,
     overflow:        'hidden',
   },
   top: {
-    paddingHorizontal: Spacing.cardPad,   // 16
-    paddingTop:        Spacing.cardPad,   // 16
-    paddingBottom:     Spacing.cardPad,   // 16
-    gap:               Spacing[3],        // 12
+    paddingHorizontal: Spacing.cardPad,
+    paddingTop:        Spacing.cardPad,
+    paddingBottom:     Spacing.cardPad,
+    gap:               Spacing[3],
   },
   topRow: {
     flexDirection:  'row',
@@ -137,11 +141,11 @@ const hero = StyleSheet.create({
   },
   tabs: {
     flexDirection: 'row',
-    gap:            Spacing[1],   // 4
+    gap:            Spacing[1],
   },
   tab: {
-    paddingHorizontal: 8,
-    paddingVertical:   4,
+    paddingHorizontal: Spacing[2],
+    paddingVertical:   Spacing[1],
     borderRadius:      Radii.pill,
     minWidth:          Spacing.touchTarget,
     alignItems:        'center',
@@ -159,31 +163,31 @@ const hero = StyleSheet.create({
   valueRow: {
     flexDirection: 'row',
     alignItems:    'flex-end',
-    gap:            Spacing[1],   // 4
+    gap:            Spacing[1],
   },
   valueCurrency: {
-    color:      Colors.white,
+    color:        Colors.white,
     ...TypeScale.numeric.sm,
-    marginBottom: Spacing[1],   // 4
-    opacity:    0.5,
+    marginBottom: Spacing[1],
+    opacity:      0.5,
   },
   valueInt: {
-    color:      Colors.white,
+    color: Colors.white,
     ...TypeScale.numeric.xl,
   },
   valueDec: {
-    color:       Colors.white,
+    color:        Colors.white,
     ...TypeScale.numeric.md,
-    marginBottom: Spacing[1],   // 4
-    opacity:     0.4,
+    marginBottom: Spacing[1],
+    opacity:      0.4,
   },
   changePill: {
     flexDirection:    'row',
     alignItems:       'center',
-    gap:               Spacing[1],   // 4
+    gap:               Spacing[1],
     alignSelf:        'flex-start',
-    paddingHorizontal: 8,
-    paddingVertical:   4,
+    paddingHorizontal: Spacing[2],
+    paddingVertical:   Spacing[1],
     borderRadius:      Radii.pill,
   },
   changeText: {
@@ -195,9 +199,9 @@ const hero = StyleSheet.create({
     backgroundColor: Colors.cardBorder,
   },
   chartSection: {
-    paddingHorizontal: Spacing.cardPad,   // 16
-    paddingTop:        Spacing.cardPad,   // 16
-    paddingBottom:     Spacing.cardPad,   // 16
+    paddingHorizontal: Spacing.cardPad,
+    paddingTop:        Spacing.cardPad,
+    paddingBottom:     Spacing.cardPad,
   },
 });
 
@@ -249,10 +253,7 @@ function ZeroState({ onConnect }: { onConnect: () => void }) {
 
   return (
     <View style={zs.wrap}>
-      {/* Ambient center glow */}
       <Animated.View style={[zs.glow, { opacity: glowPulse }]} />
-
-      {/* Floating exchange orbs */}
       <View style={zs.orbs}>
         {ORBS.map((orb) => (
           <Animated.View
@@ -267,10 +268,7 @@ function ZeroState({ onConnect }: { onConnect: () => void }) {
             />
           </Animated.View>
         ))}
-
       </View>
-
-      {/* Text */}
       <View style={zs.text}>
         <Text style={zs.eyebrow}>NO EXCHANGES CONNECTED</Text>
         <Text style={zs.headline}>Your portfolio{'\n'}lives here.</Text>
@@ -279,13 +277,10 @@ function ZeroState({ onConnect }: { onConnect: () => void }) {
           Nexus aggregates everything in real time.
         </Text>
       </View>
-
-      {/* CTA */}
       <TouchableOpacity style={zs.cta} onPress={onConnect} activeOpacity={0.85}>
         <Icon icon={Icons.add} size={20} color={Colors.onAccent} />
         <Text style={zs.ctaText}>Connect an Exchange</Text>
       </TouchableOpacity>
-
       <Text style={zs.trustNote}>
         Takes less than 2 minutes · Read-only access only
       </Text>
@@ -295,12 +290,12 @@ function ZeroState({ onConnect }: { onConnect: () => void }) {
 
 const zs = StyleSheet.create({
   wrap: {
-    flex:             1,
-    alignItems:       'center',
-    justifyContent:   'center',
-    paddingHorizontal: Spacing[8],   // 32
-    gap:               Spacing[8],   // 32
-    marginTop:        -20,
+    flex:              1,
+    alignItems:        'center',
+    justifyContent:    'center',
+    paddingHorizontal: Spacing[8],
+    gap:               Spacing[8],
+    marginTop:         -20,
   },
   glow: {
     position:        'absolute',
@@ -310,9 +305,9 @@ const zs = StyleSheet.create({
     backgroundColor: Colors.surfaceGlow,
   },
   orbs: {
-    height:     100,
-    width:      '100%',
-    alignItems: 'center',
+    height:         100,
+    width:          '100%',
+    alignItems:     'center',
     justifyContent: 'center',
   },
   orb: {
@@ -320,7 +315,7 @@ const zs = StyleSheet.create({
   },
   text: {
     alignItems: 'center',
-    gap:         Spacing[3],   // 12
+    gap:         Spacing[3],
   },
   eyebrow: {
     color: Colors.gray,
@@ -337,15 +332,15 @@ const zs = StyleSheet.create({
     textAlign: 'center',
   },
   cta: {
-    flexDirection:    'row',
-    alignItems:       'center',
-    gap:               Spacing[2],   // 8
-    backgroundColor:  Colors.accent,
-    borderRadius:     Radii.pill,
-    paddingVertical:  16,
-    paddingHorizontal: Spacing[8],   // 32
-    width:            '100%',
-    justifyContent:   'center',
+    flexDirection:     'row',
+    alignItems:        'center',
+    gap:               Spacing[2],
+    backgroundColor:   Colors.accent,
+    borderRadius:      Radii.pill,
+    paddingVertical:   16,
+    paddingHorizontal: Spacing[8],
+    width:             '100%',
+    justifyContent:    'center',
   },
   ctaText: {
     color:      Colors.onAccent,
@@ -359,7 +354,7 @@ const zs = StyleSheet.create({
   },
 });
 
-// ─── Coach mark definitions ─────────────────────────────────────────────────
+// ─── Coach mark definitions ────────────────────────────────────────────────────
 
 const COACH_MARKS = [
   {
@@ -376,35 +371,49 @@ const COACH_MARKS = [
   },
 ];
 
-// ─── Main Screen ────────────────────────────────────────────────────────────
+// ─── Top 3 Assets ─────────────────────────────────────────────────────────────
+// Sort by totalValueUSD descending and take the first 3
+
+const TOP_ASSETS = [...ASSETS]
+  .sort((a, b) => b.totalValueUSD - a.totalValueUSD)
+  .slice(0, 3);
+
+// ─── Top 3 Insights ───────────────────────────────────────────────────────────
+
+const TOP_INSIGHTS = INSIGHTS.slice(0, 3);
+
+// ─── Main Screen ──────────────────────────────────────────────────────────────
 
 export default function DashboardScreen() {
   const insets = useSafeAreaInsets();
   const { isNewUser, connectedExchanges, markCoachMarkSeen, hasSeenCoachMark } = useApp();
 
-  const [refreshing, setRefreshing]         = useState(false);
-  const [lastSynced, setLastSynced]         = useState('just now');
-  const [displayValue, setDisplayValue]     = useState(0);
-  const [coachMarkStep, setCoachMarkStep]   = useState(0);
-  const [activeTab, setActiveTab]           = useState<'DAILY' | 'WEEKLY' | 'MONTHLY'>('DAILY');
+  const [refreshing, setRefreshing]       = useState(false);
+  const [lastSynced, setLastSynced]       = useState('just now');
+  const [displayValue, setDisplayValue]   = useState(0);
+  const [coachMarkStep, setCoachMarkStep] = useState(0);
+  const [activeTab, setActiveTab]         = useState<TabType>('DAILY');
 
-  // ── Animated values ──────────────────────────────────────────────────────
-  const scrollY      = useRef(new Animated.Value(0)).current;
-  const countAnim    = useRef(new Animated.Value(0)).current;
-  const rowAnims     = useRef(ASSETS.map(() => ({
+  // ── Animated values ────────────────────────────────────────────────────────
+  const scrollY     = useRef(new Animated.Value(0)).current;
+  const countAnim   = useRef(new Animated.Value(0)).current;
+
+  // Asset row entrance animations (top 3 only)
+  const rowAnims = useRef(TOP_ASSETS.map(() => ({
     opacity:    new Animated.Value(0),
     translateY: new Animated.Value(28),
   }))).current;
-  const prevCount    = useRef(connectedExchanges.length);
-  const hasAnimated  = useRef(false);
 
-  // ── scrollY interpolations for header animations ─────────────────────────
-  const heroOpacity = scrollY.interpolate({
-    inputRange: [0, 110], outputRange: [1, 0], extrapolate: 'clamp',
-  });
-  const heroTranslateY = scrollY.interpolate({
-    inputRange: [0, 150], outputRange: [0, -40], extrapolate: 'clamp',
-  });
+  // Insight row entrance animations (top 3 only)
+  const insightAnims = useRef(TOP_INSIGHTS.map(() => ({
+    opacity:    new Animated.Value(0),
+    translateY: new Animated.Value(16),
+  }))).current;
+
+  const prevCount   = useRef(connectedExchanges.length);
+  const hasAnimated = useRef(false);
+
+  // ── scrollY interpolations ─────────────────────────────────────────────────
   const stickyOpacity = scrollY.interpolate({
     inputRange: [90, 140], outputRange: [0, 1], extrapolate: 'clamp',
   });
@@ -412,7 +421,7 @@ export default function DashboardScreen() {
     inputRange: [0, 90], outputRange: [1, 0], extrapolate: 'clamp',
   });
 
-  // ── Count-up animation listener ──────────────────────────────────────────
+  // ── Count-up listener ──────────────────────────────────────────────────────
   useEffect(() => {
     const id = countAnim.addListener(({ value }) => setDisplayValue(value));
     return () => countAnim.removeListener(id);
@@ -423,6 +432,10 @@ export default function DashboardScreen() {
     if (!isNewUser) {
       setDisplayValue(TOTAL_PORTFOLIO.valueUSD);
       rowAnims.forEach(({ opacity, translateY }) => {
+        opacity.setValue(1);
+        translateY.setValue(0);
+      });
+      insightAnims.forEach(({ opacity, translateY }) => {
         opacity.setValue(1);
         translateY.setValue(0);
       });
@@ -450,6 +463,7 @@ export default function DashboardScreen() {
       easing:          Easing.out(Easing.cubic),
     }).start();
 
+    // Asset rows stagger in
     Animated.stagger(
       75,
       rowAnims.map(({ opacity, translateY }) =>
@@ -460,8 +474,19 @@ export default function DashboardScreen() {
       )
     ).start();
 
-    const rowDelay = ASSETS.length * 75 + 150;
+    // Insight rows stagger in after assets
+    const rowDelay = TOP_ASSETS.length * 75 + 200;
     setTimeout(() => {
+      Animated.stagger(
+        60,
+        insightAnims.map(({ opacity, translateY }) =>
+          Animated.parallel([
+            Animated.timing(opacity,    { toValue: 1, duration: 280, useNativeDriver: true, easing: Easing.out(Easing.cubic) }),
+            Animated.timing(translateY, { toValue: 0, duration: 280, useNativeDriver: true, easing: Easing.out(Easing.cubic) }),
+          ])
+        )
+      ).start();
+
       if (!hasSeenCoachMark('portfolio-value')) setCoachMarkStep(1);
     }, rowDelay);
   }
@@ -485,15 +510,14 @@ export default function DashboardScreen() {
     }, 1200);
   }, []);
 
-  // ── Derived display values ───────────────────────────────────────────────
-  const isGain    = TOTAL_PORTFOLIO.change24hPercent >= 0;
-  const chartData = PORTFOLIO_HISTORY.map((p) => p.value);
-  const totalVal  = EXCHANGES.reduce((s, e) => s + e.totalValueUSD, 0);
+  // ── Derived display values ─────────────────────────────────────────────────
+  const isGain       = TOTAL_PORTFOLIO.change24hPercent >= 0;
 
   const displayInt   = Math.floor(displayValue);
   const displayDec   = Math.round((displayValue - displayInt) * 100).toString().padStart(2, '0');
   const intFormatted = displayInt.toLocaleString('en-US');
-  // ── Zero state ──────────────────────────────────────────────────────────
+
+  // ── Zero state ────────────────────────────────────────────────────────────
   if (connectedExchanges.length === 0) {
     return (
       <View style={[s.screen, { paddingTop: insets.top }]}>
@@ -517,7 +541,7 @@ export default function DashboardScreen() {
     );
   }
 
-  // ── Populated dashboard ─────────────────────────────────────────────────
+  // ── Populated dashboard ───────────────────────────────────────────────────
   return (
     <View style={[s.screen, { paddingTop: insets.top }]}>
 
@@ -582,10 +606,11 @@ export default function DashboardScreen() {
             tintColor={Colors.accent}
           />
         }
-        contentContainerStyle={[s.scroll, { paddingBottom: insets.bottom + 88 }]}
+        contentContainerStyle={[s.scroll, { paddingBottom: insets.bottom + Spacing.tabBarClearance }]}
       >
+
         {/* ── Hero card ── */}
-        <View style={s.tilesRow}>
+        <View style={s.heroWrap}>
           <HeroCard
             activeTab={activeTab}
             onTabChange={setActiveTab}
@@ -596,49 +621,106 @@ export default function DashboardScreen() {
           />
         </View>
 
-        <View style={s.assetContainer}>
-          {ASSETS.map((asset, index) => {
-            const isAssetGain = asset.change24hPercent >= 0;
-            const isLastAsset = index === ASSETS.length - 1;
-            const { opacity, translateY } = rowAnims[index];
-            return (
-              <Animated.View key={asset.id} style={{ opacity, transform: [{ translateY }] }}>
-                <TouchableOpacity
-                  style={[s.assetRow, !isLastAsset && s.assetBorder]}
-                  onPress={() => setTimeout(() => router.push(`/asset/${asset.id}`), 50)}
-                  activeOpacity={0.75}
-                >
-                  <CoinIcon symbol={asset.symbol} color={asset.color} size={32} noContainer />
-                  <View style={s.assetMid}>
-                    <Text style={s.assetName}>{asset.name}</Text>
-                    <Text style={s.assetAmount}>{formatAmount(asset.totalAmount, asset.symbol)}</Text>
-                  </View>
-                  <View style={s.assetSparkWrap}>
-                    <SparklineChart
-                      data={asset.sparkline}
-                      height={28}
-                      color={isAssetGain ? Colors.green : Colors.red}
-                      horizontalPadding={0}
-                      width={52}
-                      animateIn={false}
-                    />
-                  </View>
-                  <View style={s.assetRight}>
-                    <Text style={s.assetValue}>{formatUSD(asset.totalValueUSD)}</Text>
-                    <Text style={[s.assetChange, { color: isAssetGain ? Colors.green : Colors.red }]}>
-                      {isAssetGain ? '+' : ''}{asset.change24hPercent.toFixed(2)}%
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </Animated.View>
-            );
-          })}
+        {/* ══════════════════════════════════════
+            TOP ASSETS section
+        ══════════════════════════════════════ */}
+        <View style={s.section}>
+          <View style={s.assetCard}>
+            {/* Title row inside card */}
+            <View style={s.sectionTitleRow}>
+              <Text style={s.sectionTitle}>TOP ASSETS</Text>
+              <TouchableOpacity
+                onPress={() => router.push('/assets')}
+                activeOpacity={0.7}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Text style={s.viewAllText}>View All</Text>
+              </TouchableOpacity>
+            </View>
+
+            {TOP_ASSETS.map((asset, index) => {
+              const isAssetGain = asset.change24hPercent >= 0;
+              const isLast      = index === TOP_ASSETS.length - 1;
+              const { opacity, translateY } = rowAnims[index];
+
+              return (
+                <Animated.View key={asset.id} style={{ opacity, transform: [{ translateY }] }}>
+                  <TouchableOpacity
+                    style={[s.assetRow, !isLast && s.assetBorder]}
+                    onPress={() => setTimeout(() => router.push(`/asset/${asset.id}`), 50)}
+                    activeOpacity={0.75}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${asset.name}, ${formatUSD(asset.totalValueUSD)}`}
+                  >
+                    {/* Left: coin icon + name/amount */}
+                    <CoinIcon symbol={asset.symbol} color={asset.color} size={32} noContainer />
+                    <View style={s.assetMid}>
+                      <Text style={s.assetName}>{asset.name}</Text>
+                      <Text style={s.assetAmount}>{formatAmount(asset.totalAmount, asset.symbol)}</Text>
+                    </View>
+
+                    {/* Right: value + change */}
+                    <View style={s.assetRight}>
+                      <Text style={s.assetValue}>{formatUSD(asset.totalValueUSD)}</Text>
+                      <Text style={[s.assetChange, { color: isAssetGain ? Colors.green : Colors.red }]}>
+                        {isAssetGain ? '+' : ''}{asset.change24hPercent.toFixed(2)}%
+                      </Text>
+                    </View>
+
+                    <Icon icon={Icons.chevronRight} size={16} color={Colors.gray} />
+                  </TouchableOpacity>
+                </Animated.View>
+              );
+            })}
+          </View>
         </View>
 
-        {/* ── Insights section ── */}
-        <View style={s.insightsSection}>
-          <Text style={s.insightsSectionLabel}>INSIGHTS</Text>
-          <InsightsList animated={false} />
+        {/* ══════════════════════════════════════
+            INSIGHTS section
+        ══════════════════════════════════════ */}
+        <View style={s.section}>
+          <View style={s.insightCard}>
+            {/* Title row inside card */}
+            <View style={s.sectionTitleRow}>
+              <Text style={s.sectionTitle}>INSIGHTS</Text>
+              <TouchableOpacity
+                onPress={() => router.push('/(tabs)/analytics')}
+                activeOpacity={0.7}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Text style={s.viewAllText}>View All</Text>
+              </TouchableOpacity>
+            </View>
+
+            {TOP_INSIGHTS.map((insight, index) => {
+              const dotColor = insightAccentColor(insight.type);
+              const isLast   = index === TOP_INSIGHTS.length - 1;
+              const { opacity, translateY } = insightAnims[index];
+
+              return (
+                <Animated.View key={insight.id} style={{ opacity, transform: [{ translateY }] }}>
+                  <TouchableOpacity
+                    style={[s.insightRow, !isLast && s.insightBorder]}
+                    onPress={() => router.push('/(tabs)/analytics')}
+                    activeOpacity={0.75}
+                    accessibilityRole="button"
+                    accessibilityLabel={insight.title}
+                  >
+                    {/* Type indicator dot */}
+                    <View style={[s.insightDot, { backgroundColor: dotColor }]} />
+
+                    {/* Text block */}
+                    <View style={s.insightText}>
+                      <Text style={s.insightTitle} numberOfLines={1}>{insight.title}</Text>
+                      <Text style={s.insightBody} numberOfLines={2}>{insight.body}</Text>
+                    </View>
+
+                    <Icon icon={Icons.chevronRight} size={16} color={Colors.gray} />
+                  </TouchableOpacity>
+                </Animated.View>
+              );
+            })}
+          </View>
         </View>
 
       </Animated.ScrollView>
@@ -665,31 +747,30 @@ export default function DashboardScreen() {
         />
       ))}
 
-
     </View>
   );
 }
 
 const s = StyleSheet.create({
   screen:     { flex: 1, backgroundColor: Colors.bg },
-  scroll:     { paddingHorizontal: Spacing.screenH },   // 20
-  bottomFade: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 200 },
+  scroll:     { paddingHorizontal: Spacing.screenH, gap: Spacing[1] },
+  bottomFade: { position: 'absolute', bottom: 0, left: 0, right: 0, height: BottomFade.height },
   moodSvg:    { position: 'absolute', top: 0, left: 0 },
 
-  // ── Header ────────────────────────────────────────────────────────────────
+  // ── Header ────────────────────────────────────────────────────────────────────
   header: {
-    flexDirection:    'row',
-    justifyContent:   'space-between',
-    alignItems:       'center',
-    paddingHorizontal: Spacing.screenH,   // 20
-    paddingTop:        Spacing[4],        // 16
-    paddingBottom:     Spacing[2],        // 8
+    flexDirection:     'row',
+    justifyContent:    'space-between',
+    alignItems:        'center',
+    paddingHorizontal: Spacing.screenH,
+    paddingTop:        Spacing[4],
+    paddingBottom:     Spacing[2],
   },
   headerLogo:     { flexDirection: 'row', alignItems: 'center', gap: Spacing[2] },
   headerLogoMark: {
     width:           26,
     height:          26,
-    borderRadius:    Radii.micro,          // 4 (was 7)
+    borderRadius:    Radii.micro,
     backgroundColor: Colors.accent,
     alignItems:      'center',
     justifyContent:  'center',
@@ -706,15 +787,15 @@ const s = StyleSheet.create({
     letterSpacing: 2,
   },
   syncLabel: {
-    color: Colors.gray,
+    color:     Colors.gray,
     ...TypeScale.body.md,
-    marginTop: Spacing[1],   // 4
+    marginTop: Spacing[1],
   },
   addBtn: {
-    width:           Spacing.touchTarget,  // 44
-    height:          Spacing.touchTarget,  // 44
+    width:           Spacing.touchTarget,
+    height:          Spacing.touchTarget,
     backgroundColor: Colors.card,
-    borderRadius:    Radii.input,          // 12
+    borderRadius:    Radii.input,
     borderWidth:     1,
     borderColor:     Colors.cardBorder,
     alignItems:      'center',
@@ -728,56 +809,101 @@ const s = StyleSheet.create({
     left:          0,
     flexDirection: 'row',
     alignItems:    'center',
-    gap:            Spacing[2],   // 8
+    gap:            Spacing[2],
   },
   stickyValue: {
     color: Colors.white,
     ...TypeScale.numeric.sm,
   },
   stickyPill: {
-    paddingHorizontal: 8,
-    paddingVertical:   Spacing[1],   // 4
+    paddingHorizontal: Spacing[2],
+    paddingVertical:   Spacing[1],
     borderRadius:      Radii.pill,
   },
   stickyChange: {
     ...TypeScale.body.mdMedium,
   },
 
-  // ── Hero card wrapper ─────────────────────────────────────────────────────
-  tilesRow: {
-    marginBottom: Spacing[1],   // 4
-  },
+  // ── Hero wrapper ──────────────────────────────────────────────────────────────
+  heroWrap: {},
 
-  // ── Asset list ────────────────────────────────────────────────────────────
-  assetContainer: {
+  // ── Sections ──────────────────────────────────────────────────────────────────
+  section: {},
+
+  // ── Asset card ────────────────────────────────────────────────────────────────
+  assetCard: {
     backgroundColor: Colors.card,
-    borderRadius:    Radii.card,   // 20
+    borderRadius:    Radii.card,
     overflow:        'hidden',
-    marginBottom:    Spacing[1],   // 4
   },
   assetRow: {
-    flexDirection:    'row',
-    alignItems:       'center',
-    gap:               Spacing[3],   // 12
-    paddingHorizontal: Spacing.cardPad,  // 16
-    paddingVertical:   12,
+    flexDirection:     'row',
+    alignItems:        'center',
+    gap:               Spacing[3],
+    paddingHorizontal: Spacing.cardPad,
+    paddingVertical:   Spacing[3],
+    minHeight:         Spacing.touchTarget,
   },
-  assetBorder:   { borderBottomWidth: 1, borderBottomColor: Colors.cardBorder },
-  assetMid:      { flex: 1, gap: Spacing[1] },
-  assetName:     { color: Colors.white, ...TypeScale.body.lgStrong },
-  assetAmount:   { color: Colors.gray,  ...TypeScale.body.md },
-  assetSparkWrap: { width: 52 },
-  assetRight:    { alignItems: 'flex-end', gap: Spacing[1] },
-  assetValue:    { color: Colors.white, ...TypeScale.numeric.sm },
-  assetChange:   { ...TypeScale.body.mdMedium },
+  assetBorder:  { borderBottomWidth: 1, borderBottomColor: Colors.cardBorder },
+  assetMid:     { flex: 1, gap: Spacing[1] },
+  assetName:    { color: Colors.white, ...TypeScale.body.lgStrong },
+  assetAmount:  { color: Colors.gray,  ...TypeScale.body.md },
+  assetRight:   { alignItems: 'flex-end', gap: Spacing[1] },
+  assetValue:   { color: Colors.white, ...TypeScale.numeric.sm, fontFamily: FontFamily.mono },
+  assetChange:  { ...TypeScale.body.md, fontWeight: '600' },
 
-  // ── Insights section ──────────────────────────────────────────────────────
-  insightsSection: {
-    marginTop: Spacing[1],
+  // ── Insight card ──────────────────────────────────────────────────────────────
+  insightCard: {
+    backgroundColor: Colors.card,
+    borderRadius:    Radii.card,
+    overflow:        'hidden',
   },
-  insightsSectionLabel: {
-    color:        Colors.gray,
+  insightRow: {
+    flexDirection:     'row',
+    alignItems:        'center',
+    gap:               Spacing[3],
+    paddingHorizontal: Spacing.cardPad,
+    paddingVertical:   Spacing[3],
+    minHeight:         Spacing.touchTarget,
+  },
+  insightBorder: { borderBottomWidth: 1, borderBottomColor: Colors.cardBorder },
+  insightDot: {
+    width:        8,
+    height:       8,
+    borderRadius: Radii.pill,
+    flexShrink:   0,
+  },
+  insightText: {
+    flex: 1,
+    gap:  Spacing[1],
+  },
+  insightTitle: {
+    color: Colors.white,
+    ...TypeScale.body.lgStrong,
+  },
+  insightBody: {
+    color: Colors.gray,
+    ...TypeScale.body.md,
+  },
+
+  // ── View All button ─────────────────────────────────────────────────────────
+  sectionTitleRow: {
+    flexDirection:     'row',
+    alignItems:        'center',
+    justifyContent:    'space-between',
+    paddingHorizontal: Spacing.cardPad,
+    paddingVertical:   Spacing[3],
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.cardBorder,
+    minHeight:         Spacing.touchTarget,
+  },
+  sectionTitle: {
+    color: Colors.gray,
     ...TypeScale.label.md,
-    marginBottom: Spacing[2],
+  },
+  viewAllText: {
+    color: Colors.gray,
+    ...TypeScale.body.md,
+    fontWeight: '600',
   },
 });

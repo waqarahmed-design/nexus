@@ -80,6 +80,17 @@ export default function RootLayout() {
         />
 
         {/*
+         * Assets — full list of all portfolio assets.
+         * Pushed from Dashboard "View All" link on the Top Assets section.
+         */}
+        <Stack.Screen
+          name="assets"
+          options={{
+            animation: 'slide_from_right',
+          }}
+        />
+
+        {/*
          * Add exchange — pushed as a standard screen from the tab navigator.
          * Treated as a destination, not a task overlay.
          */}
