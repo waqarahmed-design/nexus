@@ -3,6 +3,93 @@ name: microinteractions-animation
 description: Micro-interactions design and animation skill — covers both the why/what (Saffer's Trigger-Rules-Feedback-Loops framework, signature moments, case studies, scoring) and the how (motion principles, animation patterns, advanced techniques, performance). Use when designing or auditing any microinteraction, implementing loading animations, hover effects, button feedback, page transitions, scroll-based animation, pull-to-refresh, swipe gestures, toggle transitions, modal animations, or toast notifications. Also use for advanced animation including physics-based motion, spring animations, Lottie, SVG animation, morphing, loading optimism, or attention direction. Also use for motion principles including timing, easing curves, duration, orchestration, sequencing, continuity, and state transitions. Also use for performance including 60fps animation, transform/opacity optimization, prefers-reduced-motion, or progressive enhancement. Triggers on: microinteraction, trigger design, feedback design, state design, loops and modes, signature moment, animation, micro-interaction, motion, easing, spring physics, timing, duration, loading spinner, skeleton screen, hover effect, button press, ripple, page transition, scroll animation, parallax, pull-to-refresh, swipe gesture, toggle switch, modal animation, toast, Lottie, SVG animation, morphing, reduced motion, animation performance, 60fps, orchestration, stagger, state transition, continuity.
 ---
 
+## Quick Reference — React Native Animation Specs
+
+### Scoring (always report score/10 in your response)
+Rate every interaction 0–10: 10 = immediate feedback + purposeful easing + proportional duration + all states covered + accessible
+
+### Core Framework (Saffer)
+Every microinteraction: **Trigger → Rules → Feedback → Loops**
+- Trigger: must show all states (default, active, loading, success, error, disabled)
+- Rules: define what happens, prevent double-submit, preserve input on error
+- Feedback: proportional to event (subtle=hover, clear=tap, persistent=error)
+- Loops: does it evolve with repeated use? (progressive reduction for power users)
+
+### Timing & Easing (React Native)
+```
+Enter (arriving):    ease-out   200–300ms
+Exit (leaving):      ease-in    150–200ms  (exits FASTER than entrances)
+Move on screen:      ease-in-out 200–300ms
+Tap response:        ease-out   50–100ms   (instant feel)
+Spring/modal/sheet:  spring     300–400ms
+Progress bar:        linear     (constant rate is the point)
+```
+
+### RN Easing imports
+```tsx
+import { Easing } from 'react-native';
+Easing.out(Easing.cubic)     // enter
+Easing.in(Easing.cubic)      // exit
+Easing.inOut(Easing.cubic)   // move
+```
+
+### Tap Feedback (every interactive element)
+```tsx
+const scale = useRef(new Animated.Value(1)).current;
+const spring = (val: number) => Animated.spring(scale, { toValue: val, useNativeDriver: true, tension: 300, friction: 20 }).start();
+<Animated.View style={{ transform: [{ scale }] }}>
+  <Pressable onPressIn={() => spring(0.97)} onPressOut={() => spring(1)}>
+```
+
+### Loading States (rule: skip if < 400ms)
+```tsx
+// Spinner — indeterminate, short waits, button-level
+<ActivityIndicator size="small" color={Colors.accent} />
+
+// Skeleton — content loading, known layout
+// shimmer: Animated.loop(Animated.timing(shimmer, { toValue: 1, duration: 1500, easing: Easing.linear }))
+
+// Minimum display time: 400ms (flickering loading = worse than no loading)
+```
+
+### Pull-to-Refresh
+```tsx
+<ScrollView refreshControl={
+  <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh}
+    tintColor={Colors.accent} colors={[Colors.accent]} />
+}>
+// Show spinner min 600ms even if data arrives instantly
+```
+
+### Toggle / Switch
+```tsx
+Animated.spring(thumbX, {
+  toValue: isOn ? trackWidth - thumbSize - 4 : 4,
+  useNativeDriver: true, tension: 60, friction: 10
+}).start();
+// CRITICAL: useNativeDriver: true for translateX, false for backgroundColor
+```
+
+### Modal Slide-Up (bottom sheet / full-screen)
+```tsx
+// Enter:
+Animated.spring(slideY, { toValue: 0, useNativeDriver: true, tension: 55, friction: 14 }).start();
+// Exit (faster):
+Animated.timing(slideY, { toValue: sheetHeight, duration: 250, easing: Easing.in(Easing.cubic), useNativeDriver: true }).start();
+```
+
+### Stagger List Items
+```tsx
+Animated.stagger(50, anims.map(a => Animated.timing(a, { toValue: 1, duration: 300, useNativeDriver: true }))).start();
+// Max stagger: 40–60ms per item, 6–8 items max (then no delay for remaining)
+```
+
+### Key Rules
+- `useNativeDriver: false` required for: `left`, `width`, `height`, `backgroundColor`, `borderRadius`
+- `useNativeDriver: true` for: `opacity`, `transform` (translate, scale, rotate)
+- Tab bar slider uses: `tension: 52, friction: 16`
+- Nexus tone: fintech = conservative (ease-out standard, minimal spring, no bouncing)
+
 # Micro-interactions & Animation
 
 From the conceptual framework (why and what to design) to the technical implementation (how to animate it). Covers Saffer's four-part design structure, signature moments, and case studies — plus motion principles, animation patterns, advanced techniques, and performance.
